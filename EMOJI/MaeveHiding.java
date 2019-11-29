@@ -22,7 +22,8 @@ public class MaeveHiding implements PlayerHidingTeam {
     }
     
     LepinskiEngine.Maze maeze;
-    GameState state; // not sure this is needed either
+    boolean[][] occupied;
+    GameState state; // not sure this is needed
     /* Coin + Obstacle counts */
     int stones = 0, darks = 0, slows = 0, diamonds = 0, golds = 0;
     
@@ -32,6 +33,12 @@ public class MaeveHiding implements PlayerHidingTeam {
      */
     public void startGame(List<ObstacleType> obs, List<CoinType> coins, RectMaze maze, GameState state) {
         maeze = new LepinskiEngine.Maze(maze);
+        occupied = new boolean[maze.getMaxX()][maze.getMaxY()];
+        for (int x=0; x < maze.getMaxX(); x++) {
+            for (int y=0; y<maze.getMaxY(); y++) {
+                occupied[x][y] = false;
+            }
+        }
     }
 
     /*
@@ -46,7 +53,15 @@ public class MaeveHiding implements PlayerHidingTeam {
      * Obstacles are NOT objects
      */
     public List<PlaceObstacle> setObstacles(List<ObstacleType> obs, RectMaze maze, GameState state) {
+        // this is supposed to get initialized in startgame but im not sure if it actually does
         maeze = new LepinskiEngine.Maze(maze);
+        occupied = new boolean[maze.getMaxX()][maze.getMaxY()];
+        for (int x=0; x < maze.getMaxX(); x++) {
+            for (int y=0; y<maze.getMaxY(); y++) {
+                occupied[x][y] = false;
+            }
+        }
+        
         ArrayList<PlaceObstacle> obstacles = new ArrayList<PlaceObstacle>();
         for (int i=0; i<obs.size(); i++) {
             ObstacleType o = obs.get(i);
@@ -62,39 +77,50 @@ public class MaeveHiding implements PlayerHidingTeam {
             // top left
             for (int nw1 = 1; nw1 <= slowsPerWall; nw1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, 0, nw1));
+                occupied[0][nw1] = true;
             } for (int nw2 = 1; nw2 <= slowsPerWall; nw2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, nw2, 0));
+                occupied[nw2][0] = true;
             }
             obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, 1));
+            occupied[1][1] = true;
             obstacles.addAll(placeDarks(2, 1, darksPerCorner));
             // bottom right
             for (int se1 = 1; se1 <= slowsPerWall; se1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + se1), maeze.getMaxY() - 1));
+                occupied[maeze.getMaxX() - (1 + se1)][maeze.getMaxY() - 1] = true;
             } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - 1, maeze.getMaxY() - (1 + se2)));
+                occupied[maeze.getMaxX() - 1][maeze.getMaxY() - (1 + se2)] = true;
             }
             obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, maeze.getMaxY() - 2));
+            occupied[maeze.getMaxX() - 2][maeze.getMaxY() - 2] = true;
             obstacles.addAll(placeDarks(maeze.getMaxX() - 3, maeze.getMaxY() - 2, darksPerCorner));
-            
         } else {
             // top right
             for (int ne1 = 1; ne1 <= slowsPerWall; ne1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - 1, ne1));
+                occupied[maeze.getMaxX() - 1][ne1] = true;
             } for (int ne2 = 1; ne2 <= slowsPerWall; ne2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + ne2), 0));
+                occupied[maeze.getMaxX() - (1 + ne2)][0] = true;
             }
             obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, 1));
+            occupied[maeze.getMaxX() - 2][1] = true;
             obstacles.addAll(placeDarks(maeze.getMaxX() - 3, 1, darksPerCorner));
             // bottom left
             for (int se1 = 1; se1 <= slowsPerWall; se1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, 0, maeze.getMaxY() - (1 + se1)));
+                occupied[0][maeze.getMaxY() - (1 + se1)] = true;
             } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, se2, maeze.getMaxY() - 1));
+                occupied[se2][maeze.getMaxY() - 1] = true;
             }
             obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, maeze.getMaxY() - 2));
+            occupied[1][maeze.getMaxY() - 2] = true;
             obstacles.addAll(placeDarks(2, maeze.getMaxY() - 2, darksPerCorner));
         }
-        System.out.println("OBSTACLES\ndarks:\t" + darks);
+        obstacles.addAll(placeStones(stones));
         System.out.println("stones:\t" + stones);
         
         return obstacles;
@@ -120,12 +146,14 @@ public class MaeveHiding implements PlayerHidingTeam {
             for (i = l; i < n; ++i) {
                 if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
                     darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
+                    occupied[i][l] = true;
                     darks--;
                 }
             } k++;
             for (i = k; i < m; ++i) {
                 if (darkGoesHere(maeze.getLocation(i, n-1)) && darks > 0) {
                     darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, n-1));
+                    occupied[i][n-1] = true;
                     darks--;
                 }
             } n--;
@@ -133,6 +161,7 @@ public class MaeveHiding implements PlayerHidingTeam {
                 for (i = n-1; i >= l; --i) {
                     if (darkGoesHere(maeze.getLocation(m-1, i)) && darks > 0) {
                         darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, m-1, i));
+                        occupied[m-1][i] = true;
                         darks--;
                     }
                 } m--;
@@ -141,24 +170,82 @@ public class MaeveHiding implements PlayerHidingTeam {
                 for (i = m-1; i >= k; --i) {
                     if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
                         darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
+                        occupied[i][l] = true;
                         darks--;
                     }
                 } l++;
             }
         }
         while (darks > 0) {
-            System.out.println(darks);
+            System.out.print(darks + " ");
             int a = randy.nextInt(m), b = randy.nextInt(n);
             if (darkGoesHere(maeze.getLocation(a, b))) {
                 darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, a, b));
+                occupied[a][b] = true;
                 darks--;
             }
         }
         return darkPlacements;
     }
     
+    /*
+    * Finds a spot for the stone(s).
+    * Stones ONLY go in spots with the fewest walls
+    * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
+    */
+    private List<PlaceObstacle> placeStones(int stones) {
+        ArrayList<PlaceObstacle> stonePlacements = new ArrayList<PlaceObstacle>();
+        ArrayList<MazeLocation> possiblePlacements = new ArrayList<MazeLocation>();
+                
+        /* k - starting row index
+        l - starting column index*/
+        int i, k = 0, l = 0;
+        
+        // Total spots in maze
+        int m = maeze.getMaxX(), n = maeze.getMaxY();
+        int size = m * n;
+        
+        // locations with this many directions are allowed to get a stone
+        int threshold = 4;
+        
+        while (k < m && l < n) {
+            for (i = l; i < n; ++i) {
+                possiblePlacements.add(maeze.getLocation(k, i));
+            } k++;
+            for (i = k; i < m; ++i) {
+                possiblePlacements.add(maeze.getLocation(i, n-1));
+            } n--;
+            if (k < m) {
+                for (i = n-1; i >= l; --i) {
+                    possiblePlacements.add(maeze.getLocation(m-1, i));
+                } m--;
+            }
+            if (l < n) {
+                for (i = m-1; i >= k; --i) {
+                    possiblePlacements.add(maeze.getLocation(i, l));
+                } l++;
+            }
+        }
+        
+        // old school for loop
+        while (stones > 0) {
+            for (int p = possiblePlacements.size() - 1; p > 0; p--) {
+                MazeLocation ml = possiblePlacements.get(p);
+                if (!occupied[ml.getX()][ml.getY()] && ml.getDirections().size() >= threshold && stones > 0) {
+                    System.out.println("Stone placed at " + ml.getX() + ", " + ml.getY());
+                    stonePlacements.add(new PlaceObstacle(ObstacleType.Stone, ml.getX(), ml.getY()));
+                    occupied[ml.getX()][ml.getY()] = true;
+                    stones--;
+                }
+            }
+            threshold--;
+        }
+        
+        return stonePlacements;
+    }
+    
     private boolean darkGoesHere (MazeLocation l) {
-        if (l.getObstacles() != null || l.getCoins() != null || l.getDirections().size() == 0) return false;
+        if (occupied[l.getX()][l.getY()] || l.getDirections().size() == 0) return false;
         if (l.getDirections().size() > 3) return true;
         if (l.getDirections().size() <= 3) return randy.nextBoolean();
         return false;
@@ -190,10 +277,14 @@ public class MaeveHiding implements PlayerHidingTeam {
         
         if (flipped) {
             coinPlacements.add(new PlaceCoin(CoinType.Diamond, 0, 0)); // top left
+            occupied[0][0] = true;
             coinPlacements.add(new PlaceCoin(CoinType.Diamond, maeze.getMaxX() - 1, maeze.getMaxY() - 1)); // bottom right
+            occupied[maeze.getMaxX() - 1][maeze.getMaxY() - 1] = true;
         } else {
             coinPlacements.add(new PlaceCoin(CoinType.Diamond, maeze.getMaxX() - 1, 0)); // top right
+            occupied[maeze.getMaxX() - 1][0] = true;
             coinPlacements.add(new PlaceCoin(CoinType.Diamond, 0, maeze.getMaxY() - 1)); // bottom left
+            occupied[0][maeze.getMaxY() - 1] = true;
         }
         
         coinPlacements.addAll(hideGold(golds, state));
@@ -246,6 +337,7 @@ public class MaeveHiding implements PlayerHidingTeam {
             MazeLocation ml = possiblePlacements.get(p);
             if (coinGoesHere(ml)) {
                 goldPlacements.add(new PlaceCoin(CoinType.Gold, ml.getX(), ml.getY()));
+                occupied[ml.getX()][ml.getY()] = true;
                 coins--;
             }
             p--;
@@ -254,7 +346,7 @@ public class MaeveHiding implements PlayerHidingTeam {
     }
     
     private boolean coinGoesHere (MazeLocation l) {
-        if (l.getObstacles() != null || l.getCoins() != null || l.getDirections().size() == 4) return false;
+        if (occupied[l.getX()][l.getY()] || l.getDirections().size() == 4) return false;
         if (l.getDirections().size() <= 1) return true;
         if (randy.nextInt(8) < l.getDirections().size()) return true;
         return false;

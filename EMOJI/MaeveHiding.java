@@ -47,6 +47,7 @@ public class MaeveHiding implements PlayerHidingTeam {
      */
     public List<PlaceObstacle> setObstacles(List<ObstacleType> obs, RectMaze maze, GameState state) {
         maeze = new LepinskiEngine.Maze(maze);
+        ArrayList<PlaceObstacle> obstacles = new ArrayList<PlaceObstacle>();
         for (int i=0; i<obs.size(); i++) {
             ObstacleType o = obs.get(i);
             switch (o) {
@@ -55,10 +56,38 @@ public class MaeveHiding implements PlayerHidingTeam {
                 case Slow: slows++; break;
             }
         }
+        int slowsPerWall = slows / 4;
+        if (flipped) {
+            // top left
+            for (int nw1 = 1; nw1 <= slowsPerWall; nw1++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, 0, nw1));
+            } for (int nw2 = 1; nw2 <= slowsPerWall; nw2++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, nw2, 0));
+            }
+            // bottom right
+            for (int se1 = 1; se1 <= slowsPerWall; se1++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + se1), maeze.getMaxY() - 1));
+            } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - 1, maeze.getMaxY() - (1 + se2)));
+            }
+        } else {
+            // top right
+            for (int ne1 = 1; ne1 <= slowsPerWall; ne1++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - 1, ne1));
+            } for (int ne2 = 1; ne2 <= slowsPerWall; ne2++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + ne2), 0));
+            }
+            // bottom right
+            for (int se1 = 1; se1 <= slowsPerWall; se1++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, 0, maeze.getMaxY() - (1 + se1)));
+            } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
+                obstacles.add(new PlaceObstacle(ObstacleType.Slow, se2, maeze.getMaxY() - 1));
+            }
+        }
         System.out.println("OBSTACLES\ndarks:\t" + darks);
         System.out.println("stones:\t" + stones);
-        System.out.println("slows:\t" + slows);
-        return new ArrayList<PlaceObstacle>();
+        
+        return obstacles;
     }
 
     /*

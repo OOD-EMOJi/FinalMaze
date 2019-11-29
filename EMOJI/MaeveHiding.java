@@ -21,7 +21,7 @@ public class MaeveHiding implements PlayerHidingTeam {
         System.out.println("Flipped:\t" + flipped);
     }
     
-    Maze maeze;
+    LepinskiEngine.Maze maeze;
     GameState state; // not sure this is needed either
     /* Coin + Obstacle counts */
     int stones = 0, darks = 0, slows = 0, diamonds = 0, golds = 0;
@@ -30,7 +30,9 @@ public class MaeveHiding implements PlayerHidingTeam {
      * startGame is called once at the very start of the game
      * It looks like this function never gets called?
      */
-    public void startGame(List<ObstacleType> obs, List<CoinType> coins, RectMaze maze, GameState state) {}
+    public void startGame(List<ObstacleType> obs, List<CoinType> coins, RectMaze maze, GameState state) {
+        maeze = new LepinskiEngine.Maze(maze);
+    }
 
     /*
      * setObstacles is called once after startGame
@@ -44,6 +46,7 @@ public class MaeveHiding implements PlayerHidingTeam {
      * Obstacles are NOT objects
      */
     public List<PlaceObstacle> setObstacles(List<ObstacleType> obs, RectMaze maze, GameState state) {
+        maeze = new LepinskiEngine.Maze(maze);
         for (int i=0; i<obs.size(); i++) {
             ObstacleType o = obs.get(i);
             switch (o) {
@@ -84,13 +87,13 @@ public class MaeveHiding implements PlayerHidingTeam {
         
         if (flipped) {
             coinPlacements.add(new PlaceCoin(CoinType.Diamond, 0, 0)); // top left
-            coinPlacements.add(new PlaceCoin(CoinType.Diamond, maze.getMaxX() - 1, maze.getMaxY() - 1)); // bottom right
+            coinPlacements.add(new PlaceCoin(CoinType.Diamond, maeze.getMaxX() - 1, maeze.getMaxY() - 1)); // bottom right
         } else {
-            coinPlacements.add(new PlaceCoin(CoinType.Diamond, maze.getMaxX() - 1, 0)); // top right
-            coinPlacements.add(new PlaceCoin(CoinType.Diamond, 0, maze.getMaxY() - 1)); // bottom left
+            coinPlacements.add(new PlaceCoin(CoinType.Diamond, maeze.getMaxX() - 1, 0)); // top right
+            coinPlacements.add(new PlaceCoin(CoinType.Diamond, 0, maeze.getMaxY() - 1)); // bottom left
         }
         
-        coinPlacements.addAll(hideGold(golds, maze, state));
+        coinPlacements.addAll(hideGold(golds, state));
         return coinPlacements;
     }
     
@@ -100,47 +103,57 @@ public class MaeveHiding implements PlayerHidingTeam {
      * The more walls a spot has, the more likely a coin is to appear there
      * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
      */
-    private List<PlaceCoin> hideGold(int coins, RectMaze maze, GameState state) {
+    private List<PlaceCoin> hideGold(int coins, GameState state) {
+        ArrayList<MazeLocation> possiblePlacements = new ArrayList<MazeLocation>();
         ArrayList<PlaceCoin> goldPlacements = new ArrayList<PlaceCoin>();
+        
         /* k - starting row index
         l - starting column index*/
         int i, k = 0, l = 0;
         
         // Total spots in maze
-        int m = maze.getMaxX(), n = maze.getMaxY();
+        int m = maeze.getMaxX(), n = maeze.getMaxY();
         int size = m * n;
         
-        while (k < m && l < n && coins > 0) {
+        while (k < m && l < n) {
             for (i = l; i < n; ++i) {
-                if (coinGoesHere(maze.getLocation(k, i)))
-                    goldPlacements.add(new PlaceCoin(CoinType.Gold, k, i));
-                coins--;
+                possiblePlacements.add(maeze.getLocation(k, i));
             } k++;
             for (i = k; i < m; ++i) {
-                if (coinGoesHere(maze.getLocation(i, n-1)))
-                    goldPlacements.add(new PlaceCoin(CoinType.Gold, i, n-1));
-                coins--;
+                possiblePlacements.add(maeze.getLocation(i, n-1));
             } n--;
             if (k < m) {
                 for (i = n-1; i >= l; --i) {
-                    if (coinGoesHere(maze.getLocation(m-1, i)))
-                        goldPlacements.add(new PlaceCoin(CoinType.Gold, m-1, i));
-                    coins--;
+                    possiblePlacements.add(maeze.getLocation(m-1, i));
                 } m--;
             }
             if (l < n) {
                 for (i = m-1; i >= k; --i) {
-                    if (coinGoesHere(maze.getLocation(i, l)))
-                        goldPlacements.add(new PlaceCoin(CoinType.Gold, i, l));
-                    coins--;
+                    possiblePlacements.add(maeze.getLocation(i, l));
+//                    if (coinGoesHere(maeze.getLocation(i, l)))
+//                        goldPlacements.add(new PlaceCoin(CoinType.Gold, i, l));
+//                    coins--;
                 } l++;
             }
+        }
+        
+        // old school for loop
+        int p = possiblePlacements.size() - 1;
+        while (coins > 0 && p > 0) {
+            MazeLocation ml = possiblePlacements.get(p);
+            if (coinGoesHere(ml)) {
+                goldPlacements.add(new PlaceCoin(CoinType.Gold, ml.getX(), ml.getY()));
+                coins--;
+            }
+            p--;
         }
         return goldPlacements;
     }
     
     private boolean coinGoesHere (MazeLocation l) {
-        if (!l.getObstacles.isEmpty() || !l.getCoins.isEmpty()) return false;
-        if (randy.nextInt(4) < l.getDirections().size()) return true;
+        if (l.getObstacles() != null || l.getCoins() != null || l.getDirections().size() == 4) return false;
+        if (l.getDirections().size() <= 1) return true;
+        if (randy.nextInt(8) < l.getDirections().size()) return true;
+        return false;
     }
 }

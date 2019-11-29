@@ -57,6 +57,7 @@ public class MaeveHiding implements PlayerHidingTeam {
             }
         }
         int slowsPerWall = slows / 4;
+        int darksPerCorner = (darks - 2) / 2;
         if (flipped) {
             // top left
             for (int nw1 = 1; nw1 <= slowsPerWall; nw1++) {
@@ -64,12 +65,17 @@ public class MaeveHiding implements PlayerHidingTeam {
             } for (int nw2 = 1; nw2 <= slowsPerWall; nw2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, nw2, 0));
             }
+            obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, 1));
+            obstacles.addAll(placeDarks(2, 1, darksPerCorner));
             // bottom right
             for (int se1 = 1; se1 <= slowsPerWall; se1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + se1), maeze.getMaxY() - 1));
             } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - 1, maeze.getMaxY() - (1 + se2)));
             }
+            obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, maeze.getMaxY() - 2));
+            obstacles.addAll(placeDarks(maeze.getMaxX() - 3, maeze.getMaxY() - 2, darksPerCorner));
+            
         } else {
             // top right
             for (int ne1 = 1; ne1 <= slowsPerWall; ne1++) {
@@ -77,17 +83,85 @@ public class MaeveHiding implements PlayerHidingTeam {
             } for (int ne2 = 1; ne2 <= slowsPerWall; ne2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, maeze.getMaxX() - (1 + ne2), 0));
             }
-            // bottom right
+            obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, 1));
+            obstacles.addAll(placeDarks(maeze.getMaxX() - 3, 1, darksPerCorner));
+            // bottom left
             for (int se1 = 1; se1 <= slowsPerWall; se1++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, 0, maeze.getMaxY() - (1 + se1)));
             } for (int se2 = 1; se2 <= slowsPerWall; se2++) {
                 obstacles.add(new PlaceObstacle(ObstacleType.Slow, se2, maeze.getMaxY() - 1));
             }
+            obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, maeze.getMaxY() - 2));
+            obstacles.addAll(placeDarks(2, maeze.getMaxY() - 2, darksPerCorner));
         }
         System.out.println("OBSTACLES\ndarks:\t" + darks);
         System.out.println("stones:\t" + stones);
         
         return obstacles;
+    }
+    
+    /*
+    * Spirals darks in from corners.
+    * Chances of a dark appearing in a particular spot are tied to the difficulty of reaching that spot
+    * The more walls a spot has, the less likely an obstacle is to appear there
+    * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
+    */
+    private List<PlaceObstacle> placeDarks(int x, int y, int darks) {
+        ArrayList<PlaceObstacle> darkPlacements = new ArrayList<PlaceObstacle>();
+        /* k - starting row index
+        l - starting column index*/
+        int i, k = x, l = y;
+                
+        // Total spots in maze
+        int m = maeze.getMaxX() - 1, n = maeze.getMaxY() - 1;
+        int size = m * n;
+                
+        while (k < m && l < n) {
+            for (i = l; i < n; ++i) {
+                if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
+                    darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
+                    darks--;
+                }
+            } k++;
+            for (i = k; i < m; ++i) {
+                if (darkGoesHere(maeze.getLocation(i, n-1)) && darks > 0) {
+                    darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, n-1));
+                    darks--;
+                }
+            } n--;
+            if (k < m) {
+                for (i = n-1; i >= l; --i) {
+                    if (darkGoesHere(maeze.getLocation(m-1, i)) && darks > 0) {
+                        darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, m-1, i));
+                        darks--;
+                    }
+                } m--;
+            }
+            if (l < n) {
+                for (i = m-1; i >= k; --i) {
+                    if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
+                        darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
+                        darks--;
+                    }
+                } l++;
+            }
+        }
+        while (darks > 0) {
+            System.out.println(darks);
+            int a = randy.nextInt(m), b = randy.nextInt(n);
+            if (darkGoesHere(maeze.getLocation(a, b))) {
+                darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, a, b));
+                darks--;
+            }
+        }
+        return darkPlacements;
+    }
+    
+    private boolean darkGoesHere (MazeLocation l) {
+        if (l.getObstacles() != null || l.getCoins() != null || l.getDirections().size() == 0) return false;
+        if (l.getDirections().size() > 3) return true;
+        if (l.getDirections().size() <= 3) return randy.nextBoolean();
+        return false;
     }
 
     /*

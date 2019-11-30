@@ -201,12 +201,20 @@ public class AkechetaHiding implements PlayerHidingTeam {
                 case Gold: golds++; break;
             }
         }
-        System.out.println("COINS\ndiamond:\t" + diamonds);
-        System.out.println("gold: \t" + golds);
         ///////////////////////////////////////////////////
         
+        /*
+         * Place diamonds
+         * (Spots already marked occupied by hideObstacles)
+         */
+        coinPlacements.add(new PlaceCoin(CoinType.Diamond, (maze.getMaxX() / 2) - 1, maze.getMaxY() / 2));
+        coinPlacements.add(new PlaceCoin(CoinType.Diamond, (maze.getMaxX() / 2) + 1, maze.getMaxY() / 2));
         
-//        coinPlacements.addAll(hideGold(golds, state));
+        /*
+         * Place golds
+         * (Same as Maeve's algorithm)
+         */
+        coinPlacements.addAll(hideGold(golds, state));
         return coinPlacements;
     }
     
@@ -216,13 +224,13 @@ public class AkechetaHiding implements PlayerHidingTeam {
      * The more walls a spot has, the more likely a coin is to appear there
      * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
      */
-    /*private List<PlaceCoin> hideGold(int coins, GameState state) {
+    private List<PlaceCoin> hideGold(int coins, GameState state) {
         ArrayList<MazeLocation> possiblePlacements = new ArrayList<MazeLocation>();
         ArrayList<PlaceCoin> goldPlacements = new ArrayList<PlaceCoin>();
         
         /* k - starting row index
         l - starting column index*/
-    /*
+    
         int i, k = 0, l = 0;
         
         // Total spots in maze
@@ -244,9 +252,6 @@ public class AkechetaHiding implements PlayerHidingTeam {
             if (l < n) {
                 for (i = m-1; i >= k; --i) {
                     possiblePlacements.add(ourMaze.getLocation(i, l));
-//                    if (coinGoesHere(ourMaze.getLocation(i, l)))
-//                        goldPlacements.add(new PlaceCoin(CoinType.Gold, i, l));
-//                    coins--;
                 } l++;
             }
         }
@@ -264,7 +269,6 @@ public class AkechetaHiding implements PlayerHidingTeam {
         }
         return goldPlacements;
     }
-     */
     
     private boolean coinGoesHere (MazeLocation l) {
         if (occupied[l.getX()][l.getY()] || l.getDirections().size() == 4) return false;

@@ -71,6 +71,7 @@ public class AkechetaHiding implements PlayerHidingTeam {
         int cx = maze.getMaxX() / 2, cy = maze.getMaxY() / 2;   // center values
         obstacles.add(new PlaceObstacle(ObstacleType.Stone, cx, cy));
         occupied[cx][cy] = true;
+        
         // Diamond coin placeholders on either side of the stone
         int ld = cx - 1, rd = cx + 1; // diamond x values
         occupied[ld][cy] = true;
@@ -88,21 +89,35 @@ public class AkechetaHiding implements PlayerHidingTeam {
          * 8. South of left diamond
          */
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, ld - 1, cy));
-        occupied[ld - 1][cy] = true;    // 1
+        occupied[ld - 1][cy] = true;        // 1
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, ld, cy - 1));
-        occupied[ld][cy - 1] = true;  // 2
+        occupied[ld][cy - 1] = true;        // 2
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, cx, cy - 2));
-        occupied[cx][cy - 2] = true;   // 3
+        occupied[cx][cy - 2] = true;        // 3
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, rd, cy - 1));
-        occupied[rd][cy - 1] = true;    // 4
+        occupied[rd][cy - 1] = true;        // 4
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, rd + 1, cy));
-        occupied[rd + 1][cy] = true;    // 5
+        occupied[rd + 1][cy] = true;        // 5
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, rd, cy + 1));
-        occupied[rd - 1][cy + 1] = true;    // 6
+        occupied[rd][cy + 1] = true;    // 6
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, cx, cy + 2));
-        occupied[cx][cy + 2] = true;   // 7
+        occupied[cx][cy + 2] = true;        // 7
         obstacles.add(new PlaceObstacle(ObstacleType.Slow, ld, cy + 1));
-        occupied[ld][cy + 1] = true;    // 8
+        occupied[ld][cy + 1] = true;        // 8
+        
+        /* DARKS
+         * One on each starting position,
+         * then spiraled from center
+         */
+        obstacles.add(new PlaceObstacle(ObstacleType.Dark, cx, 0));
+        occupied[cx][0] = true;
+        obstacles.add(new PlaceObstacle(ObstacleType.Dark, maze.getMaxX() - 1, cy));
+        occupied[maze.getMaxX() - 1][cy] = true;
+        obstacles.add(new PlaceObstacle(ObstacleType.Dark, cx, maze.getMaxY() - 1));
+        occupied[cx][maze.getMaxY() - 1] = true;
+        obstacles.add(new PlaceObstacle(ObstacleType.Dark, 0, cy));
+        occupied[0][cy] = true;
+        obstacles.addAll(placeDarks(0, 0, darks - 4));
         
         return obstacles;
     }
@@ -113,33 +128,33 @@ public class AkechetaHiding implements PlayerHidingTeam {
     * The more walls a spot has, the less likely an obstacle is to appear there
     * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
     */
-   /* private List<PlaceObstacle> placeDarks(int x, int y, int darks) {
+    private List<PlaceObstacle> placeDarks(int x, int y, int darks) {
         ArrayList<MazeLocation> possiblePlacements = new ArrayList<MazeLocation>();
         ArrayList<PlaceObstacle> darkPlacements = new ArrayList<PlaceObstacle>();
         
         /* k - starting row index
         l - starting column index*/
-    /*
+    
         int i, k = 0, l = 0;
         
         // Total spots in maze
-        int m = maeze.getMaxX(), n = maeze.getMaxY();
+        int m = ourMaze.getMaxX(), n = ourMaze.getMaxY();
         int size = m * n;
         while (k < m && l < n) {
             for (i = l; i < n; ++i) {
-                possiblePlacements.add(maeze.getLocation(k, i));
+                possiblePlacements.add(ourMaze.getLocation(k, i));
             } k++;
             for (i = k; i < m; ++i) {
-                possiblePlacements.add(maeze.getLocation(i, n-1));
+                possiblePlacements.add(ourMaze.getLocation(i, n-1));
             } n--;
             if (k < m) {
                 for (i = n-1; i >= l; --i) {
-                    possiblePlacements.add(maeze.getLocation(m-1, i));
+                    possiblePlacements.add(ourMaze.getLocation(m-1, i));
                 } m--;
             }
             if (l < n) {
                 for (i = m-1; i >= k; --i) {
-                    possiblePlacements.add(maeze.getLocation(i, l));
+                    possiblePlacements.add(ourMaze.getLocation(i, l));
                 } l++;
             }
         }
@@ -149,20 +164,20 @@ public class AkechetaHiding implements PlayerHidingTeam {
         while (darks > 0 && p > 0) {
             MazeLocation ml = possiblePlacements.get(p);
             if (darkGoesHere(ml)) {
-                darkPlacements.add(new PlaceCoin(CoinType.Gold, ml.getX(), ml.getY()));
+                darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, ml.getX(), ml.getY()));
                 occupied[ml.getX()][ml.getY()] = true;
                 darks--;
             }
             p--;
         }
         return darkPlacements;
-    } */
+    }
     
     
     private boolean darkGoesHere (MazeLocation l) {
-        if (occupied[l.getX()][l.getY()] || l.getDirections().size() == 0) return false;
+        if (occupied[l.getX()][l.getY()] || l.getDirections().size() <= 1) return false;
         if (l.getDirections().size() > 3) return true;
-        if (l.getDirections().size() <= 3) return randy.nextBoolean();
+        if (l.getDirections().size() >= 2) return randy.nextBoolean();
         return false;
     }
 
@@ -211,25 +226,25 @@ public class AkechetaHiding implements PlayerHidingTeam {
         int i, k = 0, l = 0;
         
         // Total spots in maze
-        int m = maeze.getMaxX(), n = maeze.getMaxY();
+        int m = ourMaze.getMaxX(), n = ourMaze.getMaxY();
         int size = m * n;
         
         while (k < m && l < n) {
             for (i = l; i < n; ++i) {
-                possiblePlacements.add(maeze.getLocation(k, i));
+                possiblePlacements.add(ourMaze.getLocation(k, i));
             } k++;
             for (i = k; i < m; ++i) {
-                possiblePlacements.add(maeze.getLocation(i, n-1));
+                possiblePlacements.add(ourMaze.getLocation(i, n-1));
             } n--;
             if (k < m) {
                 for (i = n-1; i >= l; --i) {
-                    possiblePlacements.add(maeze.getLocation(m-1, i));
+                    possiblePlacements.add(ourMaze.getLocation(m-1, i));
                 } m--;
             }
             if (l < n) {
                 for (i = m-1; i >= k; --i) {
-                    possiblePlacements.add(maeze.getLocation(i, l));
-//                    if (coinGoesHere(maeze.getLocation(i, l)))
+                    possiblePlacements.add(ourMaze.getLocation(i, l));
+//                    if (coinGoesHere(ourMaze.getLocation(i, l)))
 //                        goldPlacements.add(new PlaceCoin(CoinType.Gold, i, l));
 //                    coins--;
                 } l++;

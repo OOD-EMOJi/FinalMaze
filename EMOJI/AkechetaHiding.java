@@ -214,66 +214,35 @@ public class AkechetaHiding implements PlayerHidingTeam {
          * Place golds
          * (Same as Maeve's algorithm)
          */
-        coinPlacements.addAll(hideGold(golds, state));
+        coinPlacements.addAll(hideGold(golds));
         return coinPlacements;
     }
     
     /*
-     * Spirals gold coins out from center.
+     * Places gold coins in an "X" pattern from center
      * Chances of a coin appearing in a particular spot are tied to the difficulty of reaching that spot
      * The more walls a spot has, the more likely a coin is to appear there
-     * Spiral pattern adapted from https://www.geeksforgeeks.org/print-given-matrix-reverse-spiral-form/
      */
-    private List<PlaceCoin> hideGold(int coins, GameState state) {
-        ArrayList<MazeLocation> possiblePlacements = new ArrayList<MazeLocation>();
+    private List<PlaceCoin> hideGold(int coins) {
         ArrayList<PlaceCoin> goldPlacements = new ArrayList<PlaceCoin>();
-        
-        /* k - starting row index
-        l - starting column index*/
-    
-        int i, k = 0, l = 0;
-        
-        // Total spots in maze
-        int m = ourMaze.getMaxX(), n = ourMaze.getMaxY();
-        int size = m * n;
-        
-        while (k < m && l < n) {
-            for (i = l; i < n; ++i) {
-                possiblePlacements.add(ourMaze.getLocation(k, i));
-            } k++;
-            for (i = k; i < m; ++i) {
-                possiblePlacements.add(ourMaze.getLocation(i, n-1));
-            } n--;
-            if (k < m) {
-                for (i = n-1; i >= l; --i) {
-                    possiblePlacements.add(ourMaze.getLocation(m-1, i));
-                } m--;
-            }
-            if (l < n) {
-                for (i = m-1; i >= k; --i) {
-                    possiblePlacements.add(ourMaze.getLocation(i, l));
-                } l++;
-            }
-        }
-        
-        // old school for loop
-        int p = possiblePlacements.size() - 1;
-        while (coins > 0 && p > 0) {
-            MazeLocation ml = possiblePlacements.get(p);
-            if (coinGoesHere(ml)) {
-                goldPlacements.add(new PlaceCoin(CoinType.Gold, ml.getX(), ml.getY()));
-                occupied[ml.getX()][ml.getY()] = true;
+        int y1 = 0, y2 = ourMaze.getMaxY() - 1;
+        for (int x = 0; x < ourMaze.getMaxX(); x++) {
+            if (coinGoesHere(ourMaze.getLocation(x, y1)) && coins > 0) {
+                goldPlacements.add(new PlaceCoin(CoinType.Gold, x, y1));
+                occupied[x][y1] = true;
                 coins--;
-            }
-            p--;
+            } y1++; if (y1 >= ourMaze.getMaxY()) y1 = ourMaze.getMaxY() - 1;
+            if (coinGoesHere(ourMaze.getLocation(x, y2)) && coins > 0) {
+                goldPlacements.add(new PlaceCoin(CoinType.Gold, x, y2));
+                occupied[x][y2] = true;
+                coins--;
+            } y2--; if (y2 < 0) y2 = 0;
         }
         return goldPlacements;
     }
     
     private boolean coinGoesHere (MazeLocation l) {
-        if (occupied[l.getX()][l.getY()] || l.getDirections().size() == 4) return false;
-        if (l.getDirections().size() <= 1) return true;
-        if (randy.nextInt(8) < l.getDirections().size()) return true;
-        return false;
+        if (occupied[l.getX()][l.getY()] || l.getDirections().size() > 3) return false;
+        return true;
     }
 }

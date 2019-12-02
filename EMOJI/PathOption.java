@@ -2,7 +2,7 @@ package EMOJI;
 
 import java.util.*;
 
-public class PathOption implements Comparable<PathOption> {
+public abstract class PathOption implements Comparable<PathOption> {
 
     List<Tile> path;
     int turnsLeft;
@@ -15,6 +15,7 @@ public class PathOption implements Comparable<PathOption> {
         this.points = 0;
         this.earlierFactor = 0;
     }
+
 
     public void countPoints() {
         points = 0;

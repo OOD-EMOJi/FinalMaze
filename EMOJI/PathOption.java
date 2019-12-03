@@ -61,5 +61,26 @@ public abstract class PathOption implements Comparable<PathOption> {
 		}
 	}
 
-
+	public static DirType getDirection(int x1, int y1, int x2, int y2) {
+        int[][] SHIFT = {
+            {0, 1}, // going East
+            {1, 0}, // going South
+            {0, -1}, // going West
+            {-1, 0} // going North`
+        };
+        if (x2 - x1 == 0 && y2 - y1 == 1) {
+            return DirType.South;
+        }
+        if (x2 - x1 == 1 && y2 - y1 == 0) {
+            return DirType.East;
+        }
+        if (x2 - x1 == 0 && y2 - y1 == -1) {
+            return DirType.North;
+        }
+        if (x2 - x1 == -1 && y2 - y1 == 0) {
+            return DirType.West;
+        } else {
+            return null;
+        }
+    }
 }

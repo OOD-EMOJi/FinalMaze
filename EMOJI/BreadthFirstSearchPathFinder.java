@@ -6,11 +6,13 @@ public class BreadthFirstSearchPathFinder implements Pathfinder {
 	
 	Maze maze;
 	int width, height;
+	boolean considerWalls;
 	
-	public BreadthFirstSearchPathFinder(Maze maze) {
+	public BreadthFirstSearchPathFinder(Maze maze, boolean considerWalls) {
 		this.maze = maze;
 		this.width = maze.tiles.length;
 		this.height = maze.tiles[0].length;
+		this.considerWalls = considerWalls;
 	}
 	
 	public List<Tile> findPath(Tile startTile, Tile endTile) {
@@ -28,7 +30,7 @@ public class BreadthFirstSearchPathFinder implements Pathfinder {
 			Tile tile = queue.remove();
 			List<Tile> neighbors = maze.getNeighbors(tile);
 			for(Tile neighbor : neighbors) {
-				if(visited[neighbor.getX()][neighbor.getY()] == false && neighbor.isWall() == false) {
+				if(visited[neighbor.getX()][neighbor.getY()] == false && (considerWalls ? neighbor.isWall() == false : true)) {
 					visited[neighbor.getX()][neighbor.getY()] = true;
 					prev.put(neighbor, tile); //remember previous tile
 					queue.add(neighbor);

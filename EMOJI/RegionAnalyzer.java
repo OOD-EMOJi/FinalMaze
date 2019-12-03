@@ -5,10 +5,25 @@ import java.util.*;
 public class RegionAnalyzer {
 	Maze maze;
 	List<Region> regions;
+	List<Coin> allHiddenCoins;
+	BreadthFirstSearchPathFinder pathFinder;
 	
 	public RegionAnalyzer(Maze maze) {
 		this.maze = maze;
 		this.regions = new ArrayList<Region>();
+		this.allHiddenCoins = new ArrayList<Coin>();
+		this.pathFinder = new BreadthFirstSearchPathFinder(maze, true);
+		for(int x = 0; x < maze.tiles.length; x++) {
+			for(int y = 0; y < maze.tiles[0].length; y++) {
+				if(maze.tiles[x][y].isWall() == false) {
+					for(Thing thing : maze.tiles[x][y].getContents()) {
+						if(thing instanceof Coin && ((Coin) thing).getValue() == 1) {
+								this.allHiddenCoins.add((Coin)thing);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void calculateRegions(int scoutLocationX, int scoutLocationY, int minx, int miny, int maxx, int maxy) {
@@ -33,7 +48,17 @@ public class RegionAnalyzer {
 		return regions;
 	}
 	
-	public List<Coin> findAllHiddenCoins() {
-		return null;
+	public List<Coin> getAllHiddenCoins() {
+		return allHiddenCoins;
+	}
+	
+	public void findAllHiddenCoins(int scoutLocationX, int scoutLocationY) {
+		LinkedList<Coin> removedCoins = new LinkedList<Coin>();
+		for(Coin coin : allHiddenCoins) {
+			if(pathFinder.findPath(maze.tiles[scoutLocationX][scoutLocationY], maze.tiles[coin.getX()][coin.getY()]).size() > 0) { // found a path to this coin
+				removedCoins.add(coin); // add to list of found coins
+			}
+		}
+		allHiddenCoins.removeAll(removedCoins);
 	}
 }

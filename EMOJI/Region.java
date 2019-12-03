@@ -15,7 +15,7 @@ public class Region implements Comparable<Region> {
 		this.hiddenCoins = new ArrayList<Coin>();
 	}
 	
-	public void countCoins(Maze maze, List<Coin> hiddenCoins) {
+	public void countCoins(Maze maze, List<Coin> allhiddenCoins) {
 		for(Coin hc : hiddenCoins) {
 			if( hc.getX() < center.getX() + sizex && 
 				hc.getX() > center.getX() - sizex &&

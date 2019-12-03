@@ -16,16 +16,15 @@ public class ScoutBotPathOptionGenerator implements PathOptionGenerator {
 		this.maze = maze;
 		this.height = maze.tiles[0].length;
 		this.width = maze.tiles.length;
-		this.pathfinder = new BreadthFirstSearchPathFinder(maze);
+		this.pathfinder = new BreadthFirstSearchPathFinder(maze, true);
 		this.regionAnalyzer = new RegionAnalyzer(maze);
-
 	}
 
 	public List<PathOption> generatePathOptions(int x, int y, int turns){
 		pathList = new ArrayList<PathOption>();
 		regionAnalyzer.calculateRegions(x,y,0,0,height,width);
 		centersList = regionAnalyzer.getRegions();
-		List<Coin> hiddenCoins = regionAnalyzer.findAllHiddenCoins();
+		List<Coin> hiddenCoins = regionAnalyzer.getAllHiddenCoins();
 		for (Region region : centersList) {
 			PathOption option = new ScoutPathOption(pathfinder.findPath(maze.tiles[x][y], region.center), turns, hiddenCoins, maze);
             option.countPoints();// implement count points in ScoutPathOption

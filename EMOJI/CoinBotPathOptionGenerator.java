@@ -37,7 +37,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
         this.maze = maze;
         this.height = maze.tiles[0].length;
         this.width = maze.tiles.length;
-        this.pathfinder = new BreadthFirstSearchPathFinder(maze);
+        this.pathfinder = new BreadthFirstSearchPathFinder(maze, true);
         pathList = new ArrayList<PathOption>();
     }
 

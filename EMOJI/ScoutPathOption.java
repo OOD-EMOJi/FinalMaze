@@ -44,8 +44,8 @@ public class ScoutPathOption extends PathOption {
                     if (x >= 0 && x < height && y >= 0 && y < width){
                         List<Thing> contents = maze.tiles[x][y].getContents();
                         for (Thing t : contents) {
-                            if (t == ObstacleType.Dark) i++ ; break start;
-                            if (t == ObstacleType.Slow) i++ ;
+                            if (t instanceof Dark) { i++ ; break start;}
+                            if (t instanceof Slow) i++ ;
                             if (t instanceof Coin && ((Coin) t).getValue()==1 && cloned_list.contains(t)) {
                                 points += ((Coin) t).getValue();
                                 earlierFactor += i;

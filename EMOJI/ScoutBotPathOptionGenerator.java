@@ -88,17 +88,14 @@ public class ScoutBotPathOptionGenerator implements PathOptionGenerator {
 								if (option2.path.size() > 0)bordersPathList.add(option2);
 
 							}
-
 						}
 					}
 					iterationCounter++;
 				}
-
 				return bordersPathList;
-
-
 			}
 		}
+		return null;
 	}
 }
 

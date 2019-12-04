@@ -5,7 +5,7 @@ import LepinskiEngine.*;
 
 public class GhostBotBehavior implements RobotBehavior {
 	private Maze maze;
-	private PathFinder pathFinder;
+	private Pathfinder pathFinder;
 	private List<Coin> diamonds;
 	int turns;
 	
@@ -48,6 +48,6 @@ public class GhostBotBehavior implements RobotBehavior {
 		}
 		Collections.sort(options);
 		PathOption best = options.get(0);
-		return new CommandMove(robot, PathOption.getDirection(location.getX(), location.getY(), best.get(1).getX(), best.get(1).getY()));
+		return new CommandMove(robot, PathOption.getDirection(location.getX(), location.getY(), best.path.get(1).getX(), best.path.get(1).getY()));
 	}
 }

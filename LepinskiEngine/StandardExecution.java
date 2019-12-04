@@ -6,8 +6,10 @@ class StandardExecution implements CommandExecution{
 
     public void executeCommands(Maze the_maze, List<Command> team_cmds, GameState the_state){
 
+	processFastMoves(team_cmds);
+	
 	executeMoves(the_maze, team_cmds);
-
+	
 	updateRobotLocs(the_maze);
 
 	executePickUp(the_maze, team_cmds, the_state);
@@ -31,6 +33,32 @@ class StandardExecution implements CommandExecution{
 	}
     }
 
+    void processFastMoves(List<Command> team_cmds){
+	List<Command> fast_cmds = new ArrayList<Command>();
+	
+	for (Command cmd : team_cmds){
+	    if (cmd instanceof CommandFastMove){
+		CommandFastMove cmd_fm = (CommandFastMove) cmd;
+		Robot rob = cmd.getRobot();
+		if (rob.getModel() == ModelType.FastBot){
+		    Command cmd1 = cmd_fm.getCmd1();
+		    Command cmd2 = cmd_fm.getCmd2();
+		    if ((cmd1 instanceof CommandMove) || (cmd1 instanceof CommandCoin)){
+			fast_cmds.add(cmd1);
+		    }
+		    if ((cmd2 instanceof CommandMove) || (cmd2 instanceof CommandCoin)){
+			fast_cmds.add(cmd2);
+		    }
+		}
+	    }
+	}
+
+	for (Command c : fast_cmds){
+	    team_cmds.add(c);
+	}
+	
+    }
+    
     void executeMoves(Maze the_maze, List<Command> team_cmds){
 	MazeRobot cur_bot;
 	CommandMove cur_move;

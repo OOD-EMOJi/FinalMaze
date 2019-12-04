@@ -11,25 +11,25 @@ package LepinskiEngine;
 
 public class CommandFastMove implements Command{
     private Robot the_robot;
-    private DirType first_direction;
-    private DirType second_direction;
+    private Command first_cmd;
+    private Command second_cmd;
 
     public Robot getRobot(){
 	return the_robot;
     }
 
-    public DirType getDir1(){
-	return first_direction;
+    public Command getCmd1(){
+	return first_cmd;
     }
 
-    public DirType getDir2(){
-        return second_direction;
+    public Command getCmd2(){
+        return second_cmd;
     }
 
-    public CommandFastMove(Robot rob, DirType dir1, DirType dir2){
+    public CommandFastMove(Robot rob, Command cmd1, Command cmd2){
 	the_robot = rob;
-	first_direction = dir1;
-        second_direction = dir2;
+	first_cmd = cmd1;
+        second_cmd = cmd2;
     }
 
 }

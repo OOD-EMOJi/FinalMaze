@@ -29,18 +29,23 @@ public class ScoutPathOption extends PathOption {
         for (int i = 0; i < turnsLeft && i < path.size(); i++) {
 
             // get hidden coins in range of scout radius
-            int x = path.get(i).getX();
+            // For dark spots that affect revealling hiddencoins,we should skip to the next tile using "continue Statement, with a Label"
+           
+            
+     start:{int x = path.get(i).getX();
             int y = path.get(i).getY();
             int height = maze.tiles[0].length;
             int width = maze.tiles.length;
-            int[][] SHIFT = {{0,0},{0, 1}, {1, 0}, {0, -1}, {-1, 0} };// {0,0} to search the current tile itself, of course there is a better way of doing this!😅
-            for(int counter= 0; counter < 4 ; counter++){
+            int[][] SHIFT = {{0,0},{0, 2}, {2, 0}, {0, -2}, {-2, 0} };// {0,0} to search the current tile itself, of course there is a better way of doing this!😅
+            for(int counter= 0; counter < 3 ; counter++){
                 for(int[] shift: SHIFT){
                     x = x + (shift[0]*counter);
                     y = y + (shift[1]*counter);
                     if (x >= 0 && x < height && y >= 0 && y < width){
                         List<Thing> contents = maze.tiles[x][y].getContents();
                         for (Thing t : contents) {
+                            if (t instanceof ObstacleType.Dark) i++ ; break start;
+                            if (t instanceof ObstacleType.Slow) i++ ;
                             if (t instanceof Coin && ((Coin) t).getValue()==1 && cloned_list.contains(t)) {
                                 points += ((Coin) t).getValue();
                                 earlierFactor += i;
@@ -52,6 +57,7 @@ public class ScoutPathOption extends PathOption {
                 }
             }
         }
+      }
     }
 
 }

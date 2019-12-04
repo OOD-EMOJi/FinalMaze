@@ -1,5 +1,6 @@
 package EMOJI;
 import LepinskiEngine.*;
+import java.util.*;
 
 public  class ScoutBotBehavior implements RobotBehavior {
 
@@ -18,7 +19,8 @@ public  class ScoutBotBehavior implements RobotBehavior {
         // Make paths
         int x = location.getX();
         int y = location.getY();
-        List<PathOption> pathList = pathOptionGenerator.generatePathOptions(2 * x + 1, 2 * y + 1, 2 * currentTurns);
+        List<PathOption> pathList = new ArrayList<PathOption>();
+        pathList = pathOptionGenerator.generatePathOptions(2 * x + 1, 2 * y + 1, 2 * currentTurns);
         // Decide best path and get the next step
         PathOption pathOption = pathList.get(pathList.size() - 1);
 		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");

@@ -1,6 +1,7 @@
 package EMOJI;
 
 import java.util.*;
+import LepinskiEngine.*;
 
 public abstract class PathOption implements Comparable<PathOption> {
 

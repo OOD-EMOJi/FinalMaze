@@ -25,6 +25,7 @@ public class CoinBotBehavior implements RobotBehavior {
     int currentTurns;
     PathOptionGenerator pathOptionGenerator;
     Robot robot;
+	PathOption option;
 
     public CoinBotBehavior(int currentTurns, Robot robot, PathOptionGenerator pathOptionGenerator) {
         this.currentTurns = currentTurns;
@@ -42,15 +43,14 @@ public class CoinBotBehavior implements RobotBehavior {
         int y = location.getY();
         List<PathOption> pathList = pathOptionGenerator.generatePathOptions(2 * x + 1, 2 * y + 1, 2 * currentTurns);
         // Decide best path and get the next step
-        PathOption pathOption = pathList.get(pathList.size() - 1);
+        option = pathList.get(pathList.size() - 1);
 		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");
-		for(Tile t : pathOption.path) {
+		for(Tile t : option.path) {
 			System.out.println(t.getX() + " " + t.getY());
 		}
-        Tile currentTile = pathOption.path.get(0);
-        Tile nextStep = pathOption.path.get(1);
+        Tile currentTile = option.path.get(0);
+        Tile nextStep = option.path.get(1);
         Command command = new CommandMove(robot, PathOption.getDirection(currentTile.getX(), currentTile.getY(), nextStep.getX(), nextStep.getY()));
-        System.out.println(((CommandMove)command).getDir());
         currentTurns -= 1;
         return command;
     }

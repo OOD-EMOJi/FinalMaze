@@ -22,6 +22,7 @@ public class ScoutBotPathOptionGenerator implements PathOptionGenerator {
 
 	public List<PathOption> generatePathOptions(int x, int y, int turns){
 		pathList = new ArrayList<PathOption>();
+		regionAnalyzer.findAllHiddenCoins(x, y);
 		regionAnalyzer.calculateRegions(x,y,0,0,height,width);
 		centersList = regionAnalyzer.getRegions();
 		List<Coin> hiddenCoins = regionAnalyzer.getAllHiddenCoins();

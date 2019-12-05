@@ -23,6 +23,7 @@ public  class ScoutBotBehavior implements RobotBehavior {
         List<PathOption> pathList = new ArrayList<PathOption>();
         pathList = pathOptionGenerator.generatePathOptions(2 * x + 1, 2 * y + 1, 2 * currentTurns);
         // Decide best path and get the next step
+		System.out.println(pathList.size() + " " + pathList);
         if(pathList.size()>0){
             PathOption pathOption = pathList.get(pathList.size() - 1);
     		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");
@@ -34,6 +35,7 @@ public  class ScoutBotBehavior implements RobotBehavior {
             command = new CommandMove(robot, PathOption.getDirection(currentTile.getX(), currentTile.getY(), nextStep.getX(), nextStep.getY()));
 
         }else{
+			
             DirType dirction= location.getDirections().get(0);
             command = new CommandMove(robot, dirction);
             

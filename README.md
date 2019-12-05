@@ -1,3 +1,5 @@
-# FinalMaze
-the maze wasn't meant for you.
+# Vision: Hiding and Searching 🙀🌟👀🙃👻
 
+## Hiding obstacles and coins
+
+## Searching team

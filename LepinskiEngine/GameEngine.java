@@ -1,6 +1,4 @@
-
 package LepinskiEngine;
-import EMOJI.*;
 import java.util.List;
 import java.util.ArrayList;
 import javafx.util.Duration;
@@ -40,8 +38,8 @@ public class GameEngine extends Application{
 
     //You can Change TestTeam to be another class you create
     public GameEngine(){
-	the_team = new EMOJISearchingTeam1();
-	other_team = new MaeveHiding();
+	the_team = new TestTeam();
+	other_team = new TestTeam();
 	execution = new StandardExecution();
     }
     
@@ -280,7 +278,7 @@ public class GameEngine extends Application{
 	    the_model = bot.getModel();
 	    the_id = bot.getID();
 	    maz_bot = the_maze.getRobot(the_id);
-	    if(maz_bot.ready == true){
+	    if(maz_bot.ready == true && maz_bot.getModel()!=ModelType.VisionBot){
 		ready_bots.add(new Robot(the_model, the_id));
 	    }
 	    else{

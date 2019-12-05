@@ -34,7 +34,7 @@ public class EMOJISearchingTeam1 implements PlayerSearchingTeam {
             RobotBehavior behavior = null;
             if (type == ModelType.CoinBot) behavior = new CoinBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator(mazeA)); 
             else if (type == ModelType.ScoutBot) behavior = new ScoutBotBehavior(state.turns_remaining, bot, new ScoutBotPathOptionGenerator(mazeA)); 
-           // else if (type == ModelType.GhostBot) behavior = new GhostBotBehavior(state.turns_remaining, bot, new GhostBotPathOptionGenerator(mazeA));
+            else if (type == ModelType.GhostBot) behavior = new GhostBotBehavior(mazeA, state.turns_remaining);
             else if (type == ModelType.FastBot) behavior = new FastBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator(mazeA));
             behaviors.put(id, behavior);
          } 

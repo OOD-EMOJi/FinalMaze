@@ -52,6 +52,7 @@ public class MazeAdapter extends Maze {
                         
 			
 			tile.clearContents();
+			if(location.getCoins() != null)
 			for(CoinType coin : location.getCoins()) {
 				tile.addThing(new Coin(mx,my,1));
 			}

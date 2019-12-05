@@ -1,4 +1,6 @@
 package LepinskiEngine;
+
+import EMOJI.*;
 import java.util.List;
 import java.util.ArrayList;
 import javafx.util.Duration;
@@ -38,8 +40,8 @@ public class GameEngine extends Application{
 
     //You can Change TestTeam to be another class you create
     public GameEngine(){
-	the_team = new TestTeam();
-	other_team = new TestTeam();
+	the_team = new EMOJISearchingTeam1();
+	other_team = new MaeveHiding();
 	execution = new StandardExecution();
     }
     

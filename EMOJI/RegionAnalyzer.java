@@ -16,12 +16,15 @@ public class RegionAnalyzer {
 	}
 	
 	public void calculateRegions(int scoutLocationX, int scoutLocationY, int minx, int miny, int maxx, int maxy) {
+		findAllHiddenCoins( scoutLocationX,  scoutLocationY);
 		if(maxx - minx < 14 || maxy - miny < 14 ) return;
 		
 		//calculate center tile
 		int midx = (maxx - minx) / 2 + minx;
 		int midy = (maxy - miny) / 2 + miny;
 		Region region = new Region(maze.tiles[midx][midy], 7, 7);
+
+		region.countCoins(maze, allHiddenCoins);
 		regions.add(region);
 		
 		//recursion

@@ -21,9 +21,11 @@ public  class ScoutBotBehavior implements RobotBehavior {
         int y = location.getY();
         Command command;
         List<PathOption> pathList = new ArrayList<PathOption>();
+        System.out.println("         ready to call generator! ");
         pathList = pathOptionGenerator.generatePathOptions(2 * x + 1, 2 * y + 1, 2 * currentTurns);
+        System.out.println("         called to call generator! ");
         // Decide best path and get the next step
-		System.out.println(pathList.size() + " " + pathList);
+		//System.out.println(pathList.size() + " " + pathList);
         if(pathList.size()>0){
             PathOption pathOption = pathList.get(pathList.size() - 1);
     		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");

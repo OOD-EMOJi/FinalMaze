@@ -26,26 +26,34 @@ public  class ScoutBotBehavior implements RobotBehavior {
         System.out.println("         called to call generator! ");
         // Decide best path and get the next step
 		//System.out.println(pathList.size() + " " + pathList);
-        if(pathList.size()>0){
+        if(pathList.size()>1){
             PathOption pathOption = pathList.get(pathList.size() - 1);
     		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");
     		for(Tile t : pathOption.path) {
     			System.out.println(t.getX() + " " + t.getY());
     		}
-            Tile currentTile = pathOption.path.get(0);
-            Tile nextStep = pathOption.path.get(1);
-            command = new CommandMove(robot, PathOption.getDirection(currentTile.getX(), currentTile.getY(), nextStep.getX(), nextStep.getY()));
-
-        }else{
+            if(pathOption.path.size()>2){
+                Tile currentTile = pathOption.path.get(0);
+                Tile nextStep = pathOption.path.get(1);
+                command = new CommandMove(robot, PathOption.getDirection(currentTile.getX(), currentTile.getY(), nextStep.getX(), nextStep.getY()));
+                currentTurns -= 1;
+                return command;
+                
+            }         
 			
-            DirType dirction= location.getDirections().get(0);
-            command = new CommandMove(robot, dirction);
-            
         }
-
-        System.out.println(((CommandMove)command).getDir());
+        Random random = new Random();
+        int randomInteger = random.nextInt(4);
+        while(randomInteger > location.getDirections().size() -1){
+            randomInteger = random.nextInt(4);
+        }
+        DirType dirction= location.getDirections().get(randomInteger);
+        command = new CommandMove(robot, dirction);
         currentTurns -= 1;
-        return command;
+        return command;        
+
+
+        //System.out.println(((CommandMove)command).getDir());
     }
 
 }

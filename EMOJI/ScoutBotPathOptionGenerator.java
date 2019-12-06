@@ -25,16 +25,17 @@ public class ScoutBotPathOptionGenerator implements PathOptionGenerator {
 		regionAnalyzer.findAllHiddenCoins(x, y);
 		regionAnalyzer.calculateRegions(x,y,0,0,height,width);
 		centersList = regionAnalyzer.getRegions();
+		System.out.println("                                          Centers size =" + centersList.size());
 		List<Coin> hiddenCoins = regionAnalyzer.getAllHiddenCoins();
 		for (Region region : centersList) {
-			PathOption option = new ScoutPathOption(pathfinder.findPath(maze.tiles[x][y], region.center), turns, hiddenCoins, maze);
+			PathOption option = new ScoutPathOption(pathfinder.findPath(maze.tiles[x][y], region.center), turns, region.getHiddenCoins(), maze);
             option.countPoints();// implement count points in ScoutPathOption
 
             if (option.path.size() > 0) {
             	pathList.add(option);
             }else{
             	//else call NearestPathFinder() to find the nearst tile to the center
-            	pathList.addAll(NearestPathFinder(region.center,maze.tiles[x][y],turns, hiddenCoins));
+            	pathList.addAll(NearestPathFinder(region.center,maze.tiles[x][y],turns, region.getHiddenCoins()));
             }
             //System.out.println(tile.getX() + " " + tile.getY() + " " + option);
         }

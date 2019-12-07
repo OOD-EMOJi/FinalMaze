@@ -22,7 +22,6 @@ public class GhostBotBehavior implements RobotBehavior {
 				if(maze.tiles[x][y].isWall() == false) {
 					for(Thing thing : maze.tiles[x][y].getContents()) {
 						if(thing instanceof Coin && ((Coin) thing).getValue() == 10) {
-								System.out.println("Found Diamond");
 								this.diamonds.add((Coin)thing);
 						}
 					}
@@ -33,6 +32,7 @@ public class GhostBotBehavior implements RobotBehavior {
 	
 	public Command getCommand(Robot robot, Location location) {
 		findDiamondCoins();
+		if(diamonds.isEmpty()) return new CommandMove(robot, DirType.North);
 		if(location.getCoins() != null) {
 			for(int i = 0; i < location.getCoins().size(); i++) {
 				if(location.getCoins().get(i) == CoinType.Diamond) {
@@ -46,12 +46,13 @@ public class GhostBotBehavior implements RobotBehavior {
 			System.out.println("Path Length: " + path.size());
 			Collections.reverse(path);
 			PathOption po = new CoinPathOption(path, turns);
+			po.countPoints();
 			options.add(po);
 		}
 		Collections.sort(options);
 		PathOption best = options.get(0);
+		
 		DirType dir = PathOption.getDirection(2 * location.getX() + 1, 2 * location.getY() + 1, best.path.get(1).getX(), best.path.get(1).getY());
-		System.out.println("Ghost: " + dir);
 		return new CommandMove(robot, dir);
 	}
 }

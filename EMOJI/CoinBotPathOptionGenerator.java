@@ -56,7 +56,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
         }
         //System.out.println(pathList);
         
-        Collections.sort(pathList);
+        Collections.sort(pathList, new PathOption.GetCoinPathOptionComparator());
         for (PathOption pathOption : pathList) {
             System.out.println(pathOption);
         }
@@ -76,7 +76,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
             for (int y = 0; y < height; y++) {
                         List<Thing> contents = maze.tiles[x][y].getContents();
                         for (Thing t : contents) {
-                            if (t instanceof Coin) {
+                            if (t instanceof Coin && ((Coin)t).getValue()==1) {
                                 tileList.add(maze.tiles[x][y]);
                             }
                         }      

@@ -34,9 +34,12 @@ public class CoinBotBehavior implements RobotBehavior {
     }
 
     public Command getCommand(Robot robot, Location location) {
-        if (location.getCoins() != null && location.getCoins().size() > 0) {
+        if (location.getCoins() != null ) {
+			for(CoinType type : location.getCoins()) {
+				if(type == CoinType.Gold)
+					return new CommandCoin(robot);
+			}
             //((CoinBotPathOptionGenerator)pathOptionGenerator).maze.tiles[location.getX() * 2 + 1][location.getY() * 2 + 1].clearContents();
-            return new CommandCoin(robot);
         }
         // Make paths
         int x = location.getX();
@@ -47,17 +50,12 @@ public class CoinBotBehavior implements RobotBehavior {
         // Decide best path and get the next step
         if (pathList.size()>0){
             option = pathList.get(pathList.size() - 1);
-    		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");
-    		for(Tile t : option.path) {
-    			System.out.println(t.getX() + " " + t.getY());
-    		}
             Tile currentTile = option.path.get(0);
             Tile nextStep = option.path.get(1);
             command = new CommandMove(robot, PathOption.getDirection(currentTile.getX(), currentTile.getY(), nextStep.getX(), nextStep.getY()));
         }else{
             DirType dirction= location.getDirections().get(0);
             command = new CommandMove(robot, dirction);
-
         }
         currentTurns -= 1;
         return command;

@@ -13,8 +13,8 @@ public class FastBotBehavior extends CoinBotBehavior {
 		Command second = null;
 		if(first instanceof CommandCoin) {
 			Tile tileWeAreOn = option.path.get(0);
-			Tile nextTileAfter = option.path.get(1);
-			DirType dir = PathOption.getDirection(tileWeAreOn.getX(), tileWeAreOn.getY(), nextTileAfter.getX(), nextTileAfter.getY());
+			Tile next = option.path.get(1);
+			DirType dir = PathOption.getDirection(tileWeAreOn.getX(), tileWeAreOn.getY(), next.getX(), next.getY());
 			second = new CommandMove(robot, dir);
 			return new CommandFastMove(robot, first, second);
 		}

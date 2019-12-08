@@ -30,8 +30,8 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
     public Maze maze;
     public List<PathOption> pathList;
     private Pathfinder pathfinder;
-    private int height;
-    private int width;
+    protected int height;
+    protected int width;
 
     public CoinBotPathOptionGenerator(Maze maze) {
         this.maze = maze;
@@ -117,5 +117,74 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
         }
         return tileList;
 
-    }
+	}
+	
+	static class NorthCoinBotPathOptionGenerator extends CoinBotPathOptionGenerator {
+		
+		public NorthCoinBotPathOptionGenerator(Maze maze) {
+			super(maze);
+		}
+		
+		public List<Tile> getCoins() {
+			List<Tile> allCoins = super.getCoins();
+			List<Tile> topCoins = new ArrayList<Tile>();
+			for(Tile tile : allCoins) {
+				if(tile.getY() <= this.height / 2) {
+					topCoins.add(tile);
+				}
+			}
+			return topCoins;
+		}
+	}
+	
+	static class SouthCoinBotPathOptionGenerator extends CoinBotPathOptionGenerator {
+		
+		public SouthCoinBotPathOptionGenerator(Maze maze) {
+			super(maze);
+		}
+		public List<Tile> getCoins() {
+			List<Tile> allCoins = super.getCoins();
+			List<Tile> topCoins = new ArrayList<Tile>();
+			for(Tile tile : allCoins) {
+				if(tile.getY() > this.height / 2) {
+					topCoins.add(tile);
+				}
+			}
+			return topCoins;
+		}
+	}
+	
+	static class WestCoinBotPathOptionGenerator extends CoinBotPathOptionGenerator {
+		
+		public WestCoinBotPathOptionGenerator(Maze maze) {
+			super(maze);
+		}
+		public List<Tile> getCoins() {
+			List<Tile> allCoins = super.getCoins();
+			List<Tile> topCoins = new ArrayList<Tile>();
+			for(Tile tile : allCoins) {
+				if(tile.getY() <= this.width / 2) {
+					topCoins.add(tile);
+				}
+			}
+			return topCoins;
+		}
+	}
+	
+	static class EastCoinBotPathOptionGenerator extends CoinBotPathOptionGenerator {
+		
+		public EastCoinBotPathOptionGenerator(Maze maze) {
+			super(maze);
+		}
+		public List<Tile> getCoins() {
+			List<Tile> allCoins = super.getCoins();
+			List<Tile> topCoins = new ArrayList<Tile>();
+			for(Tile tile : allCoins) {
+				if(tile.getY() > this.width / 2) {
+					topCoins.add(tile);
+				}
+			}
+			return topCoins;
+		}
+	}
 }

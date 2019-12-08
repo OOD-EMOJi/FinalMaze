@@ -18,7 +18,7 @@ public class FastBotBehavior extends CoinBotBehavior {
 			second = new CommandMove(robot, dir);
 			return new CommandFastMove(robot, first, second);
 		}
-		
+		if(option == null) return new CommandFastMove(robot, first, first);
 		Tile tileWeAreOn = option.path.get(2);
 		for(Thing thing : tileWeAreOn.getContents()) {
 			if((thing instanceof Coin) && ((Coin) thing).getValue() == 1) {

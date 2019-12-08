@@ -21,11 +21,13 @@ public class EMOJISearchingTeam1 implements PlayerSearchingTeam {
         Robot robot2 = new Robot( ModelType.ScoutBot, ID++); 
         Robot robot3 = new Robot( ModelType.GhostBot, ID++); 
         Robot robot4 = new Robot( ModelType.FastBot, ID++); 
+        Robot robot5 = new Robot( ModelType.FastBot, ID++); 
         //TODO : Pick a 5th Robot!
         robotList.add(robot1);
         robotList.add(robot2);
         robotList.add(robot3);
         robotList.add(robot4);
+        robotList.add(robot5);
         //3. Fill bot map with robot ID's and associated bot behaviors according to robot.getType()
         boolean hasLeft = false;
         for (Robot bot : robotList) {
@@ -35,9 +37,10 @@ public class EMOJISearchingTeam1 implements PlayerSearchingTeam {
             if (type == ModelType.CoinBot) behavior = new CoinBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator(mazeA)); 
             else if (type == ModelType.ScoutBot) behavior = new ScoutBotBehavior(state.turns_remaining, bot, new ScoutBotPathOptionGenerator(mazeA)); 
             else if (type == ModelType.GhostBot) behavior = new GhostBotBehavior(mazeA, state.turns_remaining);
-            else if (type == ModelType.FastBot) behavior = new FastBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator(mazeA));
+            else if (type == ModelType.FastBot) behavior = new FastBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator.SouthCoinBotPathOptionGenerator(mazeA));
             behaviors.put(id, behavior);
          } 
+		 behaviors.put(4, new FastBotBehavior(state.turns_remaining, robotList.get(4), new CoinBotPathOptionGenerator.NorthCoinBotPathOptionGenerator(mazeA)));
          return robotList;            
     }
 

@@ -33,4 +33,8 @@ public class Region implements Comparable<Region> {
 	public int compareTo(Region that) {
 		return this.getHiddenCoins().size() - that.getHiddenCoins().size();
 	}
+	
+	public String toString() {
+		return "Region ( " + center.getX() + "," + center.getY() + " )[ " + (center.getX() - sizex) + " - " + (center.getX() + sizex) + " , " + (center.getY() - sizey) + " - " + (center.getY() + sizey) + "]";
+	}
 }

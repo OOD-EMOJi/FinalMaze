@@ -2,7 +2,7 @@ package EMOJI;
 import LepinskiEngine.*;
 import java.util.*;
 
-public  class ScoutBotBehavior implements RobotBehavior {
+public class ScoutBotBehavior implements RobotBehavior {
 
     int currentTurns;
     PathOptionGenerator pathOptionGenerator;

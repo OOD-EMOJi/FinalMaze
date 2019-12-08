@@ -15,25 +15,24 @@ public class RegionAnalyzer {
 		this.pathFinder = new BreadthFirstSearchPathFinder(maze, true);
 	}
 	
-	public void calculateRegions(int scoutLocationX, int scoutLocationY, int minx, int miny, int maxx, int maxy) {
-		findAllHiddenCoins( scoutLocationX,  scoutLocationY);
-		if(maxx - minx < 14 || maxy - miny < 14 ) return;
-		
+	public void calculateRegions(int minx, int miny, int maxx, int maxy) {
+		if(maxx - minx < 7 || maxy - miny < 7) return;
 		//calculate center tile
 		int midx = (maxx - minx) / 2 + minx;
 		int midy = (maxy - miny) / 2 + miny;
-		Region region = new Region(maze.tiles[midx][midy], 7, 7);
+		Region region = new Region(maze.tiles[midx][midy], 6, 6);
 
 		region.countCoins(maze, allHiddenCoins);
 		regions.add(region);
 		
-		//recursion
-		if(scoutLocationX < maxx && scoutLocationX > minx && scoutLocationY > miny && scoutLocationY < maxy) {
-			calculateRegions(scoutLocationX, scoutLocationY, minx, miny, midx, midy);
-			calculateRegions(scoutLocationX, scoutLocationY, midx, miny, maxx, midy);
-			calculateRegions(scoutLocationX, scoutLocationY, minx, midy, midx, maxy);
-			calculateRegions(scoutLocationX, scoutLocationY, midx, midy, maxx, maxy);
-		}
+		calculateRegions(minx, miny, midx, midy);
+		calculateRegions(midx, miny, maxx, midy);
+		calculateRegions(minx, midy, midx, maxy);
+		calculateRegions(midx, midy, maxx, maxy);
+	}
+	
+	public void clearRegions() {
+		regions.clear();
 	}
 	
 	public List<Region> getRegions() {

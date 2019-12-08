@@ -44,7 +44,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
     // generatePathOptions takes the robot location and the remaining num of turns
     public List<PathOption> generatePathOptions(int x, int y, int turns) {
         pathList = new ArrayList<PathOption>();
-        List<Tile> tiles = getCoins();
+        List<Tile> tiles = this.getCoins();
         for (Tile tile : tiles) {
             PathOption option = new CoinPathOption(pathfinder.findPath(maze.tiles[x][y], tile), turns);
             option.countPoints();
@@ -63,7 +63,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
         return pathList;
     }
 	
-	private List<Tile> getCoins() {
+	protected List<Tile> getCoins() {
 
         List<Tile> tileList = new ArrayList<Tile>();
         int[][] SHIFT = {
@@ -125,12 +125,13 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
 			super(maze);
 		}
 		
-		public List<Tile> getCoins() {
+		protected List<Tile> getCoins() {
 			List<Tile> allCoins = super.getCoins();
 			List<Tile> topCoins = new ArrayList<Tile>();
 			for(Tile tile : allCoins) {
 				if(tile.getY() <= this.height / 2) {
 					topCoins.add(tile);
+					System.out.println("NORTH TILES: " + tile.getX() + " " + tile.getY());
 				}
 			}
 			return topCoins;
@@ -142,7 +143,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
 		public SouthCoinBotPathOptionGenerator(Maze maze) {
 			super(maze);
 		}
-		public List<Tile> getCoins() {
+		protected List<Tile> getCoins() {
 			List<Tile> allCoins = super.getCoins();
 			List<Tile> topCoins = new ArrayList<Tile>();
 			for(Tile tile : allCoins) {
@@ -159,7 +160,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
 		public WestCoinBotPathOptionGenerator(Maze maze) {
 			super(maze);
 		}
-		public List<Tile> getCoins() {
+		protected List<Tile> getCoins() {
 			List<Tile> allCoins = super.getCoins();
 			List<Tile> topCoins = new ArrayList<Tile>();
 			for(Tile tile : allCoins) {
@@ -176,7 +177,7 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
 		public EastCoinBotPathOptionGenerator(Maze maze) {
 			super(maze);
 		}
-		public List<Tile> getCoins() {
+		protected List<Tile> getCoins() {
 			List<Tile> allCoins = super.getCoins();
 			List<Tile> topCoins = new ArrayList<Tile>();
 			for(Tile tile : allCoins) {

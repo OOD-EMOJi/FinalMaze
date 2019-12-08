@@ -33,7 +33,7 @@ public class ScoutPathOption extends PathOption {
             // For dark spots that affect revealling hiddencoins,we should skip to the next tile using "continue Statement, with a Label"           
      start:{int centerX = path.get(i).getX();
             int centerY = path.get(i).getY();
-            System.out.println("                        At Center " + " x = "+ centerX + " y = " + centerY);
+            //System.out.println("                        At Center " + " x = "+ centerX + " y = " + centerY);
             int height = maze.tiles[0].length;
             int width = maze.tiles.length;
             int[][] SHIFT = {{0,0},{0, 1}, {1, 0}, {0, -1}, {-1, 0} };// {0,0} to search the current tile itself, of course there is a better way of doing this!😅
@@ -54,7 +54,7 @@ public class ScoutPathOption extends PathOption {
                             if (t instanceof Slow) i++ ;
                             if (t instanceof Coin && t.getX() == x && t.getY() == y  && !removedCoins.contains(t)) {
                                 this.points += 1;
-                                System.out.println("                   ScoutPathOption points =  " + this.points);
+                                //System.out.println("                   ScoutPathOption points =  " + this.points);
                                 this.earlierFactor += i;
                                 removedCoins.add(t);
                                 i++;
@@ -68,6 +68,7 @@ public class ScoutPathOption extends PathOption {
     }
 
     public int compareTo(PathOption that) {
+		System.out.println("SCOUT COMPARE");
         if (that.points != this.points) {
             return this.points - that.points;
         } else {

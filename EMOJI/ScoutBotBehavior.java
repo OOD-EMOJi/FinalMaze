@@ -26,7 +26,7 @@ public class ScoutBotBehavior implements RobotBehavior {
         System.out.println("         called to call generator! ");
         // Decide best path and get the next step
 		//System.out.println(pathList.size() + " " + pathList);
-        if(pathList.size()>1){
+        if(pathList.size()>0){
             PathOption pathOption = pathList.get(pathList.size() - 1);
     		System.out.println("-- ( " + location.getX() + " , "  + location.getY() + " )");
     		for(Tile t : pathOption.path) {

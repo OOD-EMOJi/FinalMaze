@@ -57,9 +57,6 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
         //System.out.println(pathList);
         
         Collections.sort(pathList, new PathOption.GetCoinPathOptionComparator());
-        for (PathOption pathOption : pathList) {
-            System.out.println(pathOption);
-        }
         return pathList;
     }
 	
@@ -131,7 +128,6 @@ public class CoinBotPathOptionGenerator implements PathOptionGenerator {
 			for(Tile tile : allCoins) {
 				if(tile.getY() <= this.height / 2) {
 					topCoins.add(tile);
-					System.out.println("NORTH TILES: " + tile.getX() + " " + tile.getY());
 				}
 			}
 			return topCoins;

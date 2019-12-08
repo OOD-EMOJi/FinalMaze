@@ -16,7 +16,7 @@ public class RegionAnalyzer {
 	}
 	
 	public void calculateRegions(int minx, int miny, int maxx, int maxy) {
-		if(maxx - minx < 7 || maxy - miny < 7) return;
+		
 		//calculate center tile
 		int midx = (maxx - minx) / 2 + minx;
 		int midy = (maxy - miny) / 2 + miny;
@@ -24,6 +24,7 @@ public class RegionAnalyzer {
 
 		region.countCoins(maze, allHiddenCoins);
 		regions.add(region);
+		if(maxx - minx < 14 || maxy - miny < 14) return;
 		
 		calculateRegions(minx, miny, midx, midy);
 		calculateRegions(midx, miny, maxx, midy);

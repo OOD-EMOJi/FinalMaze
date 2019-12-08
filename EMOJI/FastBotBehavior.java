@@ -26,6 +26,7 @@ public class FastBotBehavior extends CoinBotBehavior {
 				return new CommandFastMove(robot, first, second);
 			}
 		}
+		if(option.path.size() < 4) return new CommandFastMove(robot, first, first);
 		Tile nextTileAfter = option.path.get(3);
 		DirType dir = PathOption.getDirection(tileWeAreOn.getX(), tileWeAreOn.getY(), nextTileAfter.getX(), nextTileAfter.getY());
 		second = new CommandMove(robot, dir);

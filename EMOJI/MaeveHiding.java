@@ -120,7 +120,7 @@ public class MaeveHiding implements PlayerHidingTeam {
             occupied[1][maeze.getMaxY() - 2] = true;
             obstacles.addAll(placeDarks(2, maeze.getMaxY() - 2, darksPerCorner));
         }
-        obstacles.addAll(placeStones(stones));
+//        obstacles.addAll(placeStones(stones));
         System.out.println("stones:\t" + stones);
         
         return obstacles;

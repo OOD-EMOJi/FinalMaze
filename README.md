@@ -1,5 +1,7 @@
 # Vision: Hiding and Searching 🙀🌟👀🙃👻
 
+![the center of the maze](https://files.slack.com/files-pri/TNHFAAAT0-FR18P1ZGE/thecenter.gif)
+
 ## Install and run
 
 ### If you don't already have a copy of the maze game
@@ -27,6 +29,8 @@ $ java LepinskiEngine.GameEngine
 ## Strategy 
 
 ### Hiding obstacles and coins
+
+![dllatm](https://gfycat.com/densegleefuldutchshepherddog)
 
 Our Hiding Team `EMOJiHiding.java` hides coins based on three basic principles (what we collectively like to call the *Don't Put All Your Eggs in One Basket! Laws*):
 

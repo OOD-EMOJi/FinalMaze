@@ -1,6 +1,6 @@
 # Vision: Hiding and Searching 🙀🌟👀🙃👻
 
-![the center of the maze](https://files.slack.com/files-pri/TNHFAAAT0-FR18P1ZGE/thecenter.gif)
+![dream](https://media.giphy.com/media/l0MYAIq2BLGmORX1u/giphy.gif)
 
 ## Install and run
 

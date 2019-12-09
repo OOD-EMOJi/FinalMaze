@@ -31,6 +31,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
         System.out.println("Flipped:\t" + flipped);
     }
     
+    ArrayList<MazeLocation> darkSpots = new ArrayList<MazeLocation>();
+    
     LepinskiEngine.Maze maeze;
     
     boolean[][] occupied;
@@ -86,7 +88,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                         occupied[nw2][0] = true;
                     }
                     obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, 1));
-                    occupied[1][1] = true;
+                    darkSpots.add(new MazeLocation(1, 1));
+//                    occupied[1][1] = true;
                     obstacles.addAll(placeDarks(2, 1, darksPerCorner));
                     // bottom right
                     for (int se1 = 1; se1 <= slowsPerWall; se1++) {
@@ -97,7 +100,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                         occupied[maeze.getMaxX() - 1][maeze.getMaxY() - (1 + se2)] = true;
                     }
                     obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, maeze.getMaxY() - 2));
-                    occupied[maeze.getMaxX() - 2][maeze.getMaxY() - 2] = true;
+                    darkSpots.add(new MazeLocation(maeze.getMaxX() - 2, maeze.getMaxY() - 2));
+//                    occupied[maeze.getMaxX() - 2][maeze.getMaxY() - 2] = true;
                     obstacles.addAll(placeDarks(maeze.getMaxX() - 3, maeze.getMaxY() - 2, darksPerCorner));
                 } else {
                     // top right
@@ -109,7 +113,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                         occupied[maeze.getMaxX() - (1 + ne2)][0] = true;
                     }
                     obstacles.add(new PlaceObstacle(ObstacleType.Dark, maeze.getMaxX() - 2, 1));
-                    occupied[maeze.getMaxX() - 2][1] = true;
+                    darkSpots.add(new MazeLocation(maeze.getMaxX() - 2, 1));
+//                    occupied[maeze.getMaxX() - 2][1] = true;
                     obstacles.addAll(placeDarks(maeze.getMaxX() - 3, 1, darksPerCorner));
                     // bottom left
                     for (int se1 = 1; se1 <= slowsPerWall; se1++) {
@@ -120,7 +125,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                         occupied[se2][maeze.getMaxY() - 1] = true;
                     }
                     obstacles.add(new PlaceObstacle(ObstacleType.Dark, 1, maeze.getMaxY() - 2));
-                    occupied[1][maeze.getMaxY() - 2] = true;
+                    darkSpots.add(new MazeLocation(1, maeze.getMaxY() - 2));
+//                    occupied[1][maeze.getMaxY() - 2] = true;
                     obstacles.addAll(placeDarks(2, maeze.getMaxY() - 2, darksPerCorner));
                 }
         // Place stone
@@ -151,14 +157,16 @@ public class EMOJiHiding implements PlayerHidingTeam {
             for (i = l; i < n; ++i) {
                 if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
                     darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
-                    occupied[i][l] = true;
+//                    occupied[i][l] = true;
+                    darkSpots.add(maeze.getLocation(i, l));
                     darks--;
                 }
             } k++;
             for (i = k; i < m; ++i) {
                 if (darkGoesHere(maeze.getLocation(i, n-1)) && darks > 0) {
                     darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, n-1));
-                    occupied[i][n-1] = true;
+//                    occupied[i][n-1] = true;
+                    darkSpots.add(maeze.getLocation(i, n-1));
                     darks--;
                 }
             } n--;
@@ -166,7 +174,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                 for (i = n-1; i >= l; --i) {
                     if (darkGoesHere(maeze.getLocation(m-1, i)) && darks > 0) {
                         darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, m-1, i));
-                        occupied[m-1][i] = true;
+//                        occupied[m-1][i] = true;
+                        darkSpots.add(maeze.getLocation(m-1, i));
                         darks--;
                     }
                 } m--;
@@ -175,7 +184,8 @@ public class EMOJiHiding implements PlayerHidingTeam {
                 for (i = m-1; i >= k; --i) {
                     if (darkGoesHere(maeze.getLocation(i, l)) && darks > 0) {
                         darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, i, l));
-                        occupied[i][l] = true;
+//                        occupied[i][l] = true;
+                        darkSpots.add(maeze.getLocation(i, l));
                         darks--;
                     }
                 } l++;
@@ -187,6 +197,7 @@ public class EMOJiHiding implements PlayerHidingTeam {
             if (darkGoesHere(maeze.getLocation(a, b))) {
                 darkPlacements.add(new PlaceObstacle(ObstacleType.Dark, a, b));
                 occupied[a][b] = true;
+                darkSpots.add(maeze.getLocation(a, b));
                 darks--;
             }
         }
@@ -219,6 +230,13 @@ public class EMOJiHiding implements PlayerHidingTeam {
         }
         
         while (golds > 0) {
+            for (MazeLocation l : darkSpots) {
+                if (golds > 0 && !occupied[l.getX()][l.getY()]) {
+                    coinPlacements.add(new PlaceCoin(CoinType.Gold, l.getX(), l.getY()));
+                    occupied[l.getX()][l.getY()] = true;
+                    golds--;
+                }
+            }
             int a = randy.nextInt(maze.getMaxX()), b = randy.nextInt(maze.getMaxY());
             if (coinGoesHere(maeze.getLocation(a, b))) {
                 coinPlacements.add(new PlaceCoin(CoinType.Gold, a, b));

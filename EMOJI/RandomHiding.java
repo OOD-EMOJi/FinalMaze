@@ -9,10 +9,7 @@ import java.util.ArrayList;
 public class RandomHiding implements PlayerHidingTeam {
     
     /*
-     * Maeve is procedurally generated, starting with a coin flip
-     * to determine the location of the two diamond coins
-     * true means the diamonds appear in the top left and bottom right corners
-     * false puts them in the top right and bottom left
+     * The hiding team previously known as Clementine
      */
     Random randy = new Random();
     
@@ -78,7 +75,7 @@ public class RandomHiding implements PlayerHidingTeam {
      *       As well as a number of GOLD coins (20?)
      */
     public List<PlaceCoin> hideCoins(List<CoinType> coins, RectMaze maze, GameState state) {
-        // Don't worry about it, the game will place everything
+        // Don't worry about it, the game will place everything we miss
         ArrayList<PlaceCoin> coinPlacements = new ArrayList<PlaceCoin>();
         for (int i = 0; i < coins.size(); i++) {
             int x = randy.nextInt(maze.getMaxX()), y = randy.nextInt(maze.getMaxY());

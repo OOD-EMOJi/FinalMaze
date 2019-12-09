@@ -18,7 +18,8 @@ public class EMOJISearchingTeam1 implements PlayerSearchingTeam {
         int ID = 0;
         behaviors = new HashMap<Integer, RobotBehavior>();
         Robot robot1 = new Robot( ModelType.VisionBot, ID++); 
-        Robot robot2 = new Robot( ModelType.ScoutBot, ID++); 
+//        Robot robot2 = new Robot( ModelType.ScoutBot, ID++);
+        Robot robot2 = new Robot( ModelType.CoinBot, ID++);
         Robot robot3 = new Robot( ModelType.GhostBot, ID++); 
         Robot robot4 = new Robot( ModelType.FastBot, ID++); 
         Robot robot5 = new Robot( ModelType.FastBot, ID++); 
@@ -35,7 +36,8 @@ public class EMOJISearchingTeam1 implements PlayerSearchingTeam {
             ModelType type = bot.getModel();
             RobotBehavior behavior = null;
             if (type == ModelType.CoinBot) behavior = new CoinBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator(mazeA)); 
-            else if (type == ModelType.ScoutBot) behavior = new ScoutBotBehavior(state.turns_remaining, bot, new ScoutBotPathOptionGenerator(mazeA)); 
+            else if (type == ModelType.ScoutBot) behavior = new ScoutBotBehavior(state.turns_remaining, bot, new ScoutBotPathOptionGenerator(mazeA));
+            else if (type == ModelType.CoinBot) behavior = new CoinScout(state.turns_remaining, bot, new ScoutBotPathOptionGenerator(mazeA));
             else if (type == ModelType.GhostBot) behavior = new GhostBotBehavior(mazeA, state.turns_remaining);
             else if (type == ModelType.FastBot) behavior = new FastBotBehavior(state.turns_remaining, bot, new CoinBotPathOptionGenerator.SouthCoinBotPathOptionGenerator(mazeA));
             behaviors.put(id, behavior);

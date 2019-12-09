@@ -17,10 +17,10 @@ $ java LepinskiEngine.GameEngine
 
 1. Download the `EMOJI` package and place in a folder alongside your `LepinskiEngine` directory
 1. Add the line `import EMOJI.*;` to the beginning of `LepinskiEngine/GameEngine.java`
-1. Modify the constructor of `LepinskiEngine/GameEngine.java`:
+1. Modify the constructor of `LepinskiEngine/GameEngine.java` to use our teams:
     1. To use our hiding team: modify line 44 and set `other_team = new EMOJiHiding();`
     1. To use our searching team: modify line 43 and set `the_team = new EMOJISearchingTeam1();`
-1. Open your terminal at the folder containing this repository and run
+1. Run
 ```` 
 $ javac LepinskiEngine/GameEngine.java
 $ java LepinskiEngine.GameEngine
@@ -29,8 +29,6 @@ $ java LepinskiEngine.GameEngine
 ## Strategy 
 
 ### Hiding obstacles and coins
-
-![dllatm](https://gfycat.com/densegleefuldutchshepherddog)
 
 Our Hiding Team `EMOJiHiding.java` hides coins based on three basic principles (what we collectively like to call the *Don't Put All Your Eggs in One Basket! Laws*):
 
